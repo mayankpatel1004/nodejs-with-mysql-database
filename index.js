@@ -79,21 +79,40 @@ app.get('/getUsers', function (req, res) {
 // Add user to database start //
 app.post('/addUser', function (req, res) {
 
+
+
+let l_body;
+if (req.files) {
+  let fileName1 = Date.now() + req.files.user_address1.name;
+
+  let user_address1 = req.files.user_address1;
+  let l_data = l_body;
+  // l_data['certificate'] = fileName1;
+
+  user_address1.mv(`${__dirname}/excel/${fileName1}`, function (err) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+  });}
+
+
+
+// //////////////////////////
+
     var users = {
         "user_pin": req.body.user_pin,
         "name": req.body.name,
         "first_name": req.body.first_name,
         "last_name": req.body.last_name,
         "email": req.body.email,
-        "user_address1": req.body.user_address1
+        "user_address1": req.body.fileName1
     }
-
     console.log(users);
-    // let sql = "INSERT INTO users SET ?";
-    // let query = conn.query(sql, users, (err, results) => {
-    //     if (err) throw err;
-    //     res.json({status:200,error:0,success:1,insertId:results.insertId,values: users });
-    // })
+    let sql = "INSERT INTO users SET ?";
+    let query = conn.query(sql, users, (err, results) => {
+        if (err) throw err;
+        res.json({status:200,error:0,success:1,insertId:results.insertId,values: users });
+    })
 });
 // Add user to database over //
 
@@ -188,7 +207,7 @@ workbook.write(`${__dirname}/excel/${Date.now()}${users.user_address1}`);
 let sql = "INSERT INTO users SET ?"
 
 let query =conn.query(sql,users,(err,result)=>{
-  res.send("users")
+  res.json({ status: 200, error: 0, success: 1, values: users });
 
 })
 
