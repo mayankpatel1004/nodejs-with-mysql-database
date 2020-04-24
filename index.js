@@ -1,6 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+var formidable = require('formidable');
+var util = require('util');
+var fs = require('fs');
+var excel = require('excel4node');
+
+
+
 // Allow CORS to access this services start //
 var cors = require('cors');
 app.use(function (req, res, next) {
@@ -16,9 +23,9 @@ app.use(function (req, res, next) {
 const mysql = require('mysql');
 var conn = mysql.createConnection({
     host: "localhost",
-    user: "admin",
-    password: "admin",
-    database: "database_name"
+    user: "root",
+    password: "",
+    database: "cloudswiftsolutions_com_18042020"
 });
 
 conn.connect(function (err) {
@@ -61,7 +68,7 @@ app.get('/getUsers', function (req, res) {
     //     if (err) throw err;
     //     total_records.push(results.length);
     // })
-    let sql = "SELECT * FROM users WHERE deleted_status = ? LIMIT 0,5";
+    let sql = "SELECT * FROM users LIMIT 0,5";
     let query = conn.query(sql, 'N', (err, results) => {
         if (err) throw err;
         res.json({ page: 11, status: 200, error: 0, success: 1, values: results });
@@ -72,8 +79,6 @@ app.get('/getUsers', function (req, res) {
 // Add user to database start //
 app.post('/addUser', function (req, res) {
 
-    
-
     var users = {
         "user_pin": req.body.user_pin,
         "name": req.body.name,
@@ -81,21 +86,6 @@ app.post('/addUser', function (req, res) {
         "last_name": req.body.last_name,
         "email": req.body.email,
         "user_address1": req.body.user_address1
-    }
-
-    //let updateuser_address = users.user_address1;
-    let updateuser_address = req.body.user_address1;
-    if (req.files) {
-        let fileName1 = Date.now() + req.files.user_address1.name;
-        let user_address1 = req.files.user_address1;
-        let l_data = updateuser_address;
-        l_data['user_address1'] = fileName1;
-
-        user_address1.mv(`${__dirname}/uploads/${fileName1}`, function (err) {
-            if (err) {
-                return res.status(500).send(err);
-            }
-        });
     }
 
     console.log(users);
@@ -106,7 +96,6 @@ app.post('/addUser', function (req, res) {
     // })
 });
 // Add user to database over //
-
 
 // Update user to database start //
 app.post('/updateUser', function (req, res) {
@@ -155,4 +144,53 @@ app.delete('/deleteUser', function (req, res) {
 });
 // Delete user to database over //
 
+
+
+
+app.post('/createExcel',(req,res)=>{
+
+  var users = {
+
+      "user_pin": req.body.user_pin,
+      "name": req.body.name,
+      "first_name": req.body.first_name,
+      "last_name": req.body.last_name,
+      "email": req.body.email,
+      "user_address1":req.body.user_address1
+  }
+
+
+
+  //
+    console.log(users.user_address1);
+  //
+  // let ex = fs.writeFileSync(`${__dirname}/excel/${Date.now()}${xlscreate}.xlsx`,"Hello");
+  // console.log(ex) By using File system of node
+
+  var workbook = new excel.Workbook();
+  var worksheet = workbook.addWorksheet('firstSheet'); //To add worksheets
+
+  var style = workbook.createStyle({ //To create styles
+  font: {
+    color: '#FF0800',
+    size: 12
+  }
+});
+
+worksheet.cell(1,10).number(100).style(style);
+worksheet.cell(1,2).number(200).style(style);
+worksheet.cell(1,3).formula('A1 + B1').style(style);
+worksheet.cell(2,1).string('string').style(style);
+worksheet.cell(3,1).bool(true).style(style).style({font: {size: 14}});
+workbook.write(`${__dirname}/excel/${Date.now()}${users.user_address1}`);
+
+
+let sql = "INSERT INTO users SET ?"
+
+let query =conn.query(sql,users,(err,result)=>{
+  res.send("users")
+
+})
+
+})
 app.listen(3400);
