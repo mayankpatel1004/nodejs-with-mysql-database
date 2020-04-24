@@ -165,51 +165,56 @@ app.delete('/deleteUser', function (req, res) {
 
 
 
-
+// Export excel file start //
+// https://www.npmjs.com/package/excel4node
 app.post('/createExcel',(req,res)=>{
 
-  var users = {
 
-      "user_pin": req.body.user_pin,
-      "name": req.body.name,
-      "first_name": req.body.first_name,
-      "last_name": req.body.last_name,
-      "email": req.body.email,
-      "user_address1":req.body.user_address1
-  }
+//   let sql2 = "SELECT * FROM users";
+//   let query2 = conn.query(sql2, 'N', (err, resultssql) => {
+//       if (err) throw err;
+//       res.json({ page: 11, status: 200, error: 0, success: 1, values: resultssql });
+//       //fs.createWriteStream(`${__dirname}/uploads/${Date.now()}xlscreate.xlsx`,results);
+//       fs.writeFile(`${__dirname}/uploads/${Date.now()}xlscreate.xlsx`,JSON.stringify(resultssql), function (err) {
+//         if (err) throw err;
+//         console.log('Saved!');
+//       });
+//   })
 
 
 
-  //
-    console.log(users.user_address1);
-  //
-  // let ex = fs.writeFileSync(`${__dirname}/excel/${Date.now()}${xlscreate}.xlsx`,"Hello");
-  // console.log(ex) By using File system of node
 
-  var workbook = new excel.Workbook();
-  var worksheet = workbook.addWorksheet('firstSheet'); //To add worksheets
-
-  var style = workbook.createStyle({ //To create styles
-  font: {
+//  console.log(users.user_address1);
+var users = {
+    "user_pin": req.body.user_pin,
+    "name": req.body.name,
+    "first_name": req.body.first_name,
+    "last_name": req.body.last_name,
+    "email": req.body.email,
+    "user_address1":req.body.user_address1
+}
+let ex = fs.writeFileSync(`${__dirname}/uploads/${Date.now()}vivekstatic.xlsx`,"Hello");
+var workbook = new excel.Workbook();
+var worksheet = workbook.addWorksheet('firstSheet'); //To add worksheets
+var style = workbook.createStyle({ //To create styles
+font: {
     color: '#FF0800',
     size: 12
-  }
+}
 });
 
-worksheet.cell(1,10).number(100).style(style);
-worksheet.cell(1,2).number(200).style(style);
-worksheet.cell(1,3).formula('A1 + B1').style(style);
-worksheet.cell(2,1).string('string').style(style);
-worksheet.cell(3,1).bool(true).style(style).style({font: {size: 14}});
+worksheet.cell(1,1).string("Mayank").style(style);
+worksheet.cell(2,3).number(300).style(style);
+worksheet.cell(4,5).formula('A1 + B1').style(style);
+worksheet.cell(6).string('string').style(style);
+worksheet.cell(7).bool(true).style(style).style({font: {size: 14}});
 workbook.write(`${__dirname}/excel/${Date.now()}${users.user_address1}`);
 
-
 let sql = "INSERT INTO users SET ?"
+    let query =conn.query(sql,users,(err,result)=>{
+    res.json({ status: 200, error: 0, success: 1, values: users });
+    })
+ })
+// Export excel file over //
 
-let query =conn.query(sql,users,(err,result)=>{
-  res.json({ status: 200, error: 0, success: 1, values: users });
-
-})
-
-})
 app.listen(3400);
