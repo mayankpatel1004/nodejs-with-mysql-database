@@ -6,8 +6,6 @@ var util = require('util');
 var fs = require('fs');
 var excel = require('excel4node');
 
-
-
 // Allow CORS to access this services start //
 var cors = require('cors');
 app.use(function (req, res, next) {
@@ -17,7 +15,6 @@ app.use(function (req, res, next) {
     next();
 });
 // Allow CORS to access this services end //
-
 
 // Database connection start //
 const mysql = require('mysql');
@@ -95,10 +92,7 @@ if (req.files) {
     }
   });}
 
-
-
-// //////////////////////////
-
+////////////////////////////
     var users = {
         "user_pin": req.body.user_pin,
         "name": req.body.name,
@@ -134,7 +128,6 @@ app.post('/updateUser', function (req, res) {
 });
 // Update user to database over //
 
-
 // Update user to database start //
 app.post('/updateUserStatus', function (req, res) {
     var users = {
@@ -163,12 +156,9 @@ app.delete('/deleteUser', function (req, res) {
 });
 // Delete user to database over //
 
-
-
 // Export excel file start //
 // https://www.npmjs.com/package/excel4node
 app.post('/createExcel',(req,res)=>{
-
 
 //   let sql2 = "SELECT * FROM users";
 //   let query2 = conn.query(sql2, 'N', (err, resultssql) => {
@@ -180,9 +170,6 @@ app.post('/createExcel',(req,res)=>{
 //         console.log('Saved!');
 //       });
 //   })
-
-
-
 
 //  console.log(users.user_address1);
 var users = {
